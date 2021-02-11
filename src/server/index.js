@@ -6,6 +6,7 @@ const koaBody = require('koa-body')
 const app = new Koa()
 app.use(cors({
   origin: '*',
+  // 'Access-Control-Allow-Origin': '*'
 }))
 // body parser
 app.use(koaBody({ multipart: true, includeUnparsed: true }))
@@ -40,7 +41,6 @@ apiRouter
   .use(require('./routes/index').routes())
   .use(require('./routes/warehouses').routes())
   .use(require('./routes/productions').routes())
-  .use(require('./routes/warehouse').routes())
 app.use(apiRouter.routes())
 
 // server

@@ -1,7 +1,8 @@
 const queries = require('../../db/queries')
 
 module.exports = async ctx => {
-  const productions_raw = await queries.productions.getProductions()
+  const q = (ctx.query.q || '').trim()
+  const productions_raw = await queries.productions.getProductions(q)
   const productions = []
   for (const pr of productions_raw) {
     const production = {

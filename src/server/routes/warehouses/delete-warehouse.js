@@ -18,23 +18,20 @@ module.exports = async ctx => {
   }
 
   if (Array.isArray(data.moveTo) && data.moveTo.length > 0) {
-    for (const i of moveTo) {
+    for (const i of data.moveTo) {
       const { amount, warehouse_id, production_id } = i
-      const [warehouseData] = await queries.warehouse.getWhere({warehouse_id: id, production_id})
-      if (amount <= warehouseData.amount) {
-        const preparedWarehouseData = {
-          production_id,
-          amount,
-          warehouse_id
-        }
-        const [warehouseToMove] = await queries.warehouse.getWhere({warehouse_id, production_id})
-        if (warehouseToMove) {
-          preparedWarehouseData.amount += warehouseToMove.amount
-          await queries.warehouse.updateWarehouse(warehouseToMove.id, preparedWarehouseData)
-        }
+      // check if target warehouse has already inside this production
+      const [targetWarehouse] = await queries.warehouse.getWhere({warehouse_id, production_id});
+      if (!targetWarehouse) {
+        await queries.warehouse.addToWarehouse({amount, warehouse_id, production_id})
+      } else {
+        delete targetWarehouse.warehouse_name
+        delete targetWarehouse.production_name
+        await queries.warehouse.updateWarehouse(targetWarehouse.id, {...targetWarehouse, amount: targetWarehouse.amount + amount})
       }
     }
   }
+  await queries.warehouses.deleteWarehouse(id)
 
-
+  ctx.body = {}
 }

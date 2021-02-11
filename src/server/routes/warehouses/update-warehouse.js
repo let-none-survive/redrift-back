@@ -39,6 +39,8 @@ module.exports = async ctx => {
         await queries.warehouse.addToWarehouse(warehousePreparedData)
       } else {
         const warehouseCopy = {...warehouseData, amount}
+        delete warehouseCopy.warehouse_name
+        delete warehouseCopy.production_name
         await queries.warehouse.updateWarehouse(warehouseCopy.id, warehouseCopy)
       }
     }
