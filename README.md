@@ -24,8 +24,7 @@ $ knex migrate:latest
 Run server after migrations
 
 ```sh
-$ yarn 
-dev
+$ yarn dev
 ```
 
 ### Todos
