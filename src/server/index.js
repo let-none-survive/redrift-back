@@ -4,10 +4,12 @@ const cors = require('@koa/cors')
 const koaBody = require('koa-body')
 
 const app = new Koa()
-app.use(cors({
-  origin: '*',
-  // 'Access-Control-Allow-Origin': '*'
-}))
+app.use(
+  cors({
+    origin: '*',
+    // 'Access-Control-Allow-Origin': '*'
+  })
+)
 // body parser
 app.use(koaBody({ multipart: true, includeUnparsed: true }))
 

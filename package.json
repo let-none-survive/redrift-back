@@ -7,13 +7,15 @@
     "start": "node ./src/server/index.js",
     "test": "./node_modules/mocha/bin/_mocha ./test/**/*.test.js",
     "test-jest": "jest",
-    "debug": "node --inspect ./src/server/index.js"
+    "debug": "node --inspect ./src/server/index.js",
+    "format": "prettier --write \"src/**/*.js\""
   },
   "keywords": [],
   "author": "Roma Boyko",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "prettier": "^2.2.1"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",

@@ -3,7 +3,6 @@ const queries = require('../../db/queries')
 const _pick = require('lodash/pick')
 
 module.exports = async ctx => {
-
   const data = ctx.request.body
   // validation
   const validation = new Validator(data, {
@@ -14,12 +13,13 @@ module.exports = async ctx => {
 
   if (validation.fails()) {
     ctx.status = 422
-    return ctx.body = { message: 'The given data was invalid.', errors: validation.errors.all() }
+    return (ctx.body = {
+      message: 'The given data was invalid.',
+      errors: validation.errors.all(),
+    })
   }
 
-  const warehouseData = _pick(data, [
-    'name'
-  ])
+  const warehouseData = _pick(data, ['name'])
 
   console.log(`create warehouse with data: ${JSON.stringify(warehouseData)}`)
   const warehouse = await queries.warehouses.createWarehouse(warehouseData)
@@ -31,7 +31,7 @@ module.exports = async ctx => {
       const warehousePreparedData = {
         production_id: i.production_id,
         amount: i.amount,
-        warehouse_id: warehouse.id
+        warehouse_id: warehouse.id,
       }
       await queries.warehouse.addToWarehouse(warehousePreparedData)
     }

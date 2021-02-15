@@ -14,7 +14,10 @@ module.exports = async ctx => {
 
   if (validation.fails()) {
     ctx.status = 422
-    return ctx.body = { message: 'The given data was invalid.', errors: validation.errors.all() }
+    return (ctx.body = {
+      message: 'The given data was invalid.',
+      errors: validation.errors.all(),
+    })
   }
 
   if (Array.isArray(data.moveTo) && data.moveTo.length > 0) {
@@ -22,21 +25,36 @@ module.exports = async ctx => {
       const { amount, warehouse_id, production_id, isUndistributed } = i
       // check if target warehouse has already inside this production
       if (!isUndistributed) {
-        const [targetWarehouse] = await queries.warehouse.getWhere({warehouse_id, production_id});
+        const [targetWarehouse] = await queries.warehouse.getWhere({
+          warehouse_id,
+          production_id,
+        })
         if (!targetWarehouse) {
-          await queries.warehouse.addToWarehouse({amount, warehouse_id, production_id})
+          await queries.warehouse.addToWarehouse({
+            amount,
+            warehouse_id,
+            production_id,
+          })
         } else {
           delete targetWarehouse.warehouse_name
           delete targetWarehouse.production_name
-          await queries.warehouse.updateWarehouse(targetWarehouse.id, {...targetWarehouse, amount: targetWarehouse.amount + amount})
+          await queries.warehouse.updateWarehouse(targetWarehouse.id, {
+            ...targetWarehouse,
+            amount: targetWarehouse.amount + amount,
+          })
         }
       }
 
-      const [currentWarehouse] = await queries.warehouse.getWhere({warehouse_id: id, production_id})
+      const [currentWarehouse] = await queries.warehouse.getWhere({
+        warehouse_id: id,
+        production_id,
+      })
       delete currentWarehouse.warehouse_name
       delete currentWarehouse.production_name
-      await queries.warehouse.updateWarehouse(currentWarehouse.id, {...currentWarehouse, amount: currentWarehouse.amount - amount})
-
+      await queries.warehouse.updateWarehouse(currentWarehouse.id, {
+        ...currentWarehouse,
+        amount: currentWarehouse.amount - amount,
+      })
     }
   }
 

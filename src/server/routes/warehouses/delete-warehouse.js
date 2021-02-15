@@ -14,20 +14,33 @@ module.exports = async ctx => {
 
   if (validation.fails()) {
     ctx.status = 422
-    return ctx.body = { message: 'The given data was invalid.', errors: validation.errors.all() }
+    return (ctx.body = {
+      message: 'The given data was invalid.',
+      errors: validation.errors.all(),
+    })
   }
 
   if (Array.isArray(data.moveTo) && data.moveTo.length > 0) {
     for (const i of data.moveTo) {
       const { amount, warehouse_id, production_id } = i
       // check if target warehouse has already inside this production
-      const [targetWarehouse] = await queries.warehouse.getWhere({warehouse_id, production_id});
+      const [targetWarehouse] = await queries.warehouse.getWhere({
+        warehouse_id,
+        production_id,
+      })
       if (!targetWarehouse) {
-        await queries.warehouse.addToWarehouse({amount, warehouse_id, production_id})
+        await queries.warehouse.addToWarehouse({
+          amount,
+          warehouse_id,
+          production_id,
+        })
       } else {
         delete targetWarehouse.warehouse_name
         delete targetWarehouse.production_name
-        await queries.warehouse.updateWarehouse(targetWarehouse.id, {...targetWarehouse, amount: targetWarehouse.amount + amount})
+        await queries.warehouse.updateWarehouse(targetWarehouse.id, {
+          ...targetWarehouse,
+          amount: targetWarehouse.amount + amount,
+        })
       }
     }
   }
